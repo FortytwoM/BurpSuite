@@ -1,0 +1,14 @@
+burp_data/
+*.jar
+!loader.jar
+!lib/*.jar
+burpsuite_pro_latest.jar
+*.class
+*.log
+.env
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+

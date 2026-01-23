@@ -1,0 +1,7 @@
+burp_data/
+*.log
+.env
+.git/
+.gitignore
+README.md
+*.md
