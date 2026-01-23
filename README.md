@@ -32,15 +32,3 @@ docker compose up -d
    docker compose exec burpsuite java -cp /app/loader.jar Keygen -activate "<REQUEST>"
    ```
 8. Вставьте полученный Response в Burp → Next
-
-### Переменные окружения
-
-Создайте файл `.env` для настройки:
-
-```env
-# VNC Password (оставьте пустым для автогенерации)
-VNC_PASSWORD=your_secure_password_here
-
-# License name
-LICENSE_NAME=User
-```
