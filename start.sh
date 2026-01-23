@@ -28,28 +28,49 @@ log "Starting VNC server..."
 vncserver -kill :1 2>/dev/null || true
 sleep 1
 
-if [ ! -f "$HOME/.vnc/passwd" ] || [ -z "${VNC_PASSWORD_FILE:-}" ]; then
-    echo "$VNC_PASSWORD" | vncpasswd -f > "$HOME/.vnc/passwd" 2>/dev/null
+VNC_AUTH="${VNC_AUTH:-false}"
+
+if [ "$VNC_AUTH" = "true" ] || [ "$VNC_AUTH" = "yes" ] || [ "$VNC_AUTH" = "1" ]; then
+    log "Setting up VNC with password authentication..."
+    mkdir -p "$HOME/.vnc"
+    echo "$VNC_PASSWORD" | vncpasswd -f > "$HOME/.vnc/passwd" || {
+        log "ERROR: Failed to set VNC password"
+        exit 1
+    }
     chmod 600 "$HOME/.vnc/passwd"
-    log "VNC password set (use VNC_PASSWORD env var to customize)"
+    log "VNC password configured"
     echo "=========================================" >&2
     echo "VNC PASSWORD: $VNC_PASSWORD" >&2
     echo "=========================================" >&2
+    
+    VNC_OPTS="-SecurityTypes VncAuth -PasswordFile $HOME/.vnc/passwd"
+else
+    log "VNC authentication disabled (no password required)"
+    VNC_OPTS="-SecurityTypes None --I-KNOW-THIS-IS-INSECURE"
 fi
 
-VNC_LOCALHOST_ONLY="${VNC_LOCALHOST_ONLY:-yes}"
+log "Starting VNC server..."
 vncserver :1 -geometry 1920x1080 -depth 24 \
-    -localhost ${VNC_LOCALHOST_ONLY} \
-    -SecurityTypes VncAuth \
-    -PasswordFile "$HOME/.vnc/passwd" \
-    2>/dev/null
+    -localhost no \
+    $VNC_OPTS \
+    2>&1 | tee -a "$LOG_FILE" || {
+    log "ERROR: VNC server command failed"
+    exit 1
+}
 sleep 3
 
-if ! pgrep -f "Xtigervnc.*:1" > /dev/null; then
-    log "ERROR: VNC failed to start"
+if ! pgrep -f "Xtigervnc" > /dev/null && ! pgrep -f "vncserver" > /dev/null; then
+    log "ERROR: VNC process not found after startup"
+    log "Checking for VNC processes..."
+    ps aux | grep -i vnc | tee -a "$LOG_FILE" || true
+    log "Checking VNC log files..."
+    ls -la "$HOME/.vnc/" | tee -a "$LOG_FILE" || true
+    for logfile in "$HOME/.vnc/"*:*.log; do
+        [ -f "$logfile" ] && cat "$logfile" | tee -a "$LOG_FILE"
+    done
     exit 1
 fi
-log "VNC started on :1 (localhost only: $VNC_LOCALHOST_ONLY)"
+log "VNC started on :1 (auth: $VNC_AUTH)"
 
 export DISPLAY=:1
 

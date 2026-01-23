@@ -1,9 +1,11 @@
 FROM eclipse-temurin:21-jdk
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
     wget \
     tigervnc-standalone-server \
     tigervnc-common \
+    tigervnc-tools \
     fluxbox \
     libxtst6 \
     libxrender1 \
@@ -11,9 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxrandr2 \
     libasound2t64 \
     openssl \
+    dos2unix \
+    procps \
     && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd -r burp && useradd -r -g burp -u 1000 -d /home/burp -m burp && \
+RUN groupadd -r burp && useradd -r -g burp -d /home/burp -m burp && \
     mkdir -p /home/burp/.vnc /app/burp_data && \
     chown -R burp:burp /home/burp /app/burp_data
 
@@ -26,12 +30,14 @@ ENV JAVA_OPTS="--add-opens=java.desktop/javax.swing=ALL-UNNAMED --add-opens=java
 
 EXPOSE 5901
 
-RUN echo '#!/bin/bash\nfluxbox &\nwhile true; do sleep 30; done' > /home/burp/.vnc/xstartup && \
+RUN echo -e '#!/bin/bash\nfluxbox &\nwhile true; do sleep 30; done' > /home/burp/.vnc/xstartup && \
     chmod +x /home/burp/.vnc/xstartup && \
     chown -R burp:burp /home/burp/.vnc
 
 COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh && chown burp:burp /app/start.sh /app/loader.jar
+RUN dos2unix /app/start.sh && \
+    chmod +x /app/start.sh && \
+    chown burp:burp /app/start.sh /app/loader.jar
 
 USER burp
 

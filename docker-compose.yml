@@ -9,6 +9,7 @@ services:
       - ./burp_data:/app/burp_data
     environment:
       - LICENSE_NAME=${LICENSE_NAME:-User}
+      - VNC_AUTH=${VNC_AUTH:-false}
       - VNC_PASSWORD=${VNC_PASSWORD:-}
     deploy:
       resources:

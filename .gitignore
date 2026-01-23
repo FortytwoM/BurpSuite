@@ -1,6 +1,6 @@
 burp_data/
 *.jar
-!loader.jar
+loader.jar
 !lib/*.jar
 burpsuite_pro_latest.jar
 *.class
