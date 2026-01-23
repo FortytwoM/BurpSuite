@@ -1,6 +1,6 @@
 # Burp Suite Professional - Docker
 
-Burp Suite Professional в Docker с VNC доступом.
+Burp Suite Professional в Docker
 
 ## Быстрый старт
 
@@ -33,14 +33,6 @@ docker compose up -d
    ```
 8. Вставьте полученный Response в Burp → Next
 
-## Безопасность
-
-- ✅ VNC защищен паролем (автогенерация или через `VNC_PASSWORD` в `.env`)
-- ✅ Порты ограничены только localhost (127.0.0.1)
-- ✅ Контейнер работает от непривилегированного пользователя (burp:1000)
-- ✅ Ограничены capabilities контейнера
-- ✅ Чувствительные данные выводятся в stderr, а не в логи
-
 ### Переменные окружения
 
 Создайте файл `.env` для настройки:
@@ -51,43 +43,4 @@ VNC_PASSWORD=your_secure_password_here
 
 # License name
 LICENSE_NAME=User
-```
-
-## Структура
-
-```
-├── Dockerfile
-├── docker-compose.yml
-├── start.sh
-├── loader.jar
-├── src/
-│   ├── Loader.java    # Java Agent
-│   ├── Filter.java    # License filter
-│   └── Keygen.java    # Key generator
-├── scripts/
-│   ├── build_loader.ps1
-│   └── build_loader.sh
-└── burp_data/         # Persistent data
-```
-
-## CLI
-
-```bash
-# Generate license
-java -cp loader.jar Keygen "Name"
-
-# Generate activation response
-java -cp loader.jar Keygen -activate "<REQUEST>"
-```
-
-## Troubleshooting
-
-```bash
-# Logs
-docker compose logs -f
-
-# Rebuild
-docker compose down
-docker compose build --no-cache
-docker compose up -d
 ```
