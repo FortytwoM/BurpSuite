@@ -74,8 +74,7 @@ public class Filter {
                 System.out.println("║                    MANUAL ACTIVATION REQUIRED                      ║");
                 System.out.println("╠════════════════════════════════════════════════════════════════════╣");
                 System.out.println("║  1. COPY the Activation Request from Burp window                   ║");
-                System.out.println("║  2. Run: docker compose exec burpsuite java -cp /app/loader.jar    ║");
-                System.out.println("║         Keygen -activate \"<REQUEST>\"                               ║");
+                System.out.println("║  2. Run: java -cp loader.jar Keygen -activate \"<REQUEST>\"          ║");
                 System.out.println("║  3. PASTE the response into Burp and click Next                    ║");
                 System.out.println("╚════════════════════════════════════════════════════════════════════╝\n");
             }

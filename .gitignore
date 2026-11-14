@@ -1,8 +1,6 @@
-burp_data/
 *.jar
 loader.jar
 !lib/*.jar
-burpsuite_pro_latest.jar
 *.class
 *.log
 .env
@@ -11,4 +9,3 @@ Thumbs.db
 *.swp
 *.swo
 *~
-
