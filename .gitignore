@@ -1,5 +1,4 @@
 *.jar
-loader.jar
 !lib/*.jar
 *.class
 *.log
